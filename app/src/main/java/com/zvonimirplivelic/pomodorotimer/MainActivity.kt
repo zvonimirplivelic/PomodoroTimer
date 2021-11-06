@@ -1,38 +1,181 @@
 package com.zvonimirplivelic.pomodorotimer
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.os.CountDownTimer
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
-import com.zvonimirplivelic.pomodorotimer.databinding.ActivityMainBinding
+import android.widget.TextView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.zvonimirplivelic.pomodorotimer.util.PrefUtil
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar
+
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var fabStart: FloatingActionButton
+    private lateinit var fabStop: FloatingActionButton
+    private lateinit var fabPause: FloatingActionButton
+    private lateinit var progressBar: MaterialProgressBar
+    private lateinit var tvTime: TextView
+
+    enum class TimerState {
+        STOPPED, PAUSED, RUNNING
+    }
+
+    private lateinit var timer: CountDownTimer
+    private var timerLengthSeconds: Long = 0L
+    private var timerState = TimerState.STOPPED
+
+    private var secondsRemaining = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setSupportActionBar(findViewById(R.id.toolbar))
+        supportActionBar?.setIcon(R.drawable.ic_tomato)
+        supportActionBar?.title = "      Pomodoro Timer"
 
-        setSupportActionBar(binding.toolbar)
+        fabStart = findViewById(R.id.fab_play)
+        fabStop = findViewById(R.id.fab_stop)
+        fabPause = findViewById(R.id.fab_pause)
+        progressBar = findViewById(R.id.mpb_progress_bar)
+        tvTime = findViewById(R.id.tv_timer_countdown)
 
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        fabStart.setOnClickListener {
+            startTimer()
+            timerState = TimerState.RUNNING
+            updateButtons()
 
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            Log.d(TAG, "onCreate: ")
+        }
+        fabPause.setOnClickListener {
+            timer.cancel()
+            timerState = TimerState.PAUSED
+            updateButtons()
+        }
+        fabStop.setOnClickListener {
+            timer.cancel()
+            onTimerFinished()
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        initializeTimer()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        if (timerState == TimerState.RUNNING) {
+            timer.cancel()
+        } else if (timerState == TimerState.PAUSED) {
+
+            PrefUtil.setPreviousTimerLength(timerLengthSeconds, this)
+            PrefUtil.setSecondsRemaining(secondsRemaining, this)
+            PrefUtil.setTimerState(timerState, this)
+
+        }
+    }
+
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        PrefUtil.getTimerLength(this)
+//    }
+
+    private fun initializeTimer() {
+        timerState = PrefUtil.getTimerState(this)
+        if (timerState == TimerState.STOPPED) {
+            setNewTimerLength()
+        } else {
+            setPreviousTimerLength()
+        }
+        secondsRemaining =
+            if (timerState == TimerState.RUNNING || timerState == TimerState.PAUSED) {
+                PrefUtil.getSecondsRemaining(this)
+            } else {
+                timerLengthSeconds
+            }
+
+        if (timerState == TimerState.RUNNING) {
+            startTimer()
+            updateButtons()
+        }
+    }
+
+    private fun onTimerFinished() {
+        timerState = MainActivity.TimerState.STOPPED
+        setNewTimerLength()
+
+        progressBar.progress = 0
+
+        PrefUtil.setSecondsRemaining(timerLengthSeconds, this)
+        secondsRemaining = timerLengthSeconds
+
+        updateButtons()
+        updateCountdownUI()
+    }
+
+    private fun startTimer() {
+        timerState = MainActivity.TimerState.RUNNING
+        timer = object : CountDownTimer(secondsRemaining * 1000, 1000) {
+            override fun onFinish() = onTimerFinished()
+
+            override fun onTick(millisUntilFinished: Long) {
+                secondsRemaining = millisUntilFinished / 1000
+                updateCountdownUI()
+            }
+        }.start()
+    }
+
+    private fun setNewTimerLength() {
+        val lengthInMinutes = PrefUtil.getTimerLength(this)
+        timerLengthSeconds = (lengthInMinutes * 60L)
+        progressBar.max = timerLengthSeconds.toInt()
+    }
+
+    private fun setPreviousTimerLength() {
+        timerLengthSeconds = PrefUtil.getPreviousTimerLength(this)
+        progressBar.max = timerLengthSeconds.toInt()
+    }
+
+    private fun updateCountdownUI() {
+        val minutesUntilFinished = secondsRemaining / 60
+        val secondsInMinuteUntilFinished = secondsRemaining - minutesUntilFinished * 60
+
+        val secondsString = secondsInMinuteUntilFinished.toString()
+        tvTime.text = "$minutesUntilFinished:${
+            if (secondsString.length == 2) secondsString
+            else "0" + secondsString
+        }"
+
+        progressBar.progress = (timerLengthSeconds - secondsRemaining).toInt()
+    }
+
+    private fun updateButtons() {
+        when (timerState) {
+            TimerState.RUNNING -> {
+                fabStart.isEnabled = false
+                fabPause.isEnabled = true
+                fabStop.isEnabled = true
+            }
+            TimerState.PAUSED -> {
+                fabStart.isEnabled = true
+                fabPause.isEnabled = false
+                fabStop.isEnabled = true
+            }
+            TimerState.STOPPED -> {
+                fabStart.isEnabled = true
+                fabPause.isEnabled = false
+                fabStop.isEnabled = true
+            }
+        }
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -48,11 +191,5 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
     }
 }

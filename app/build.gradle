@@ -49,4 +49,7 @@ dependencies {
     // Material Progress Bar
     implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'
 
+    // Preferences
+    implementation 'androidx.preference:preference-ktx:1.1.1'
+
 }
