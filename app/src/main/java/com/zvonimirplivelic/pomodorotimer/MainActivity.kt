@@ -12,7 +12,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.zvonimirplivelic.pomodorotimer.receiver.TimerReceiver
+import com.zvonimirplivelic.pomodorotimer.receiver.TimerDoneReceiver
+import com.zvonimirplivelic.pomodorotimer.util.NotificationUtil
 import com.zvonimirplivelic.pomodorotimer.util.PrefUtil
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar
 import java.util.*
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         fun setAlarm(context: Context, nowSeconds: Long, secondsRemaining: Long): Long {
             val countdownEndTime = (nowSeconds + secondsRemaining) * 1000
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val intent = Intent(context, TimerReceiver::class.java)
+            val intent = Intent(context, TimerDoneReceiver::class.java)
             val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, countdownEndTime, pendingIntent)
 
@@ -40,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         fun removeAlarm(context: Context) {
-            val intent = Intent(context, TimerReceiver::class.java)
+            val intent = Intent(context, TimerDoneReceiver::class.java)
             val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(pendingIntent)
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setIcon(R.drawable.ic_tomato)
-        supportActionBar?.title = "      Pomodoro Timer"
+        supportActionBar?.title = "Pomodoro Timer"
 
         fabStart = findViewById(R.id.fab_play)
         fabStop = findViewById(R.id.fab_stop)
@@ -97,6 +98,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         initializeTimer()
         removeAlarm(this)
+        NotificationUtil.hideTimerNotification(this)
     }
 
     override fun onPause() {
@@ -104,9 +106,10 @@ class MainActivity : AppCompatActivity() {
 
         if (timerState == TimerState.RUNNING) {
             timer.cancel()
-//            val countdownEndTime = setAlarm(this, currentSeconds, secondsRemaining)
+            val countdownEndTime = setAlarm(this, currentSeconds, secondsRemaining)
+            NotificationUtil.showTimerRunning(this, countdownEndTime)
         } else if (timerState == TimerState.PAUSED) {
-
+            NotificationUtil.showTimerPaused(this)
         }
         PrefUtil.setPreviousTimerLength(timerLengthSeconds, this)
         PrefUtil.setSecondsRemaining(secondsRemaining, this)
