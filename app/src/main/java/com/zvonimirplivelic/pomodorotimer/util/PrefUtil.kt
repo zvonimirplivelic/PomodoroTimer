@@ -49,5 +49,17 @@ class PrefUtil {
             editor.putLong(SECONDS_REMAINING_ID, seconds)
             editor.apply()
         }
+
+        private const val ALARM_SET_TIME_ID = "ALARM_SET_TIME"
+        fun getAlarmSetTime(context: Context): Long {
+            val preferences = getDefaultSharedPreferences(context)
+            return preferences.getLong(ALARM_SET_TIME_ID, 0)
+        }
+
+        fun setAlarmSetTime(time: Long, context: Context) {
+            val editor = getDefaultSharedPreferences(context).edit()
+            editor.putLong(ALARM_SET_TIME_ID, time)
+            editor.apply()
+        }
     }
 }

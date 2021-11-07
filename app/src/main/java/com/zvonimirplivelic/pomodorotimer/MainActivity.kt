@@ -1,5 +1,9 @@
 package com.zvonimirplivelic.pomodorotimer
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -8,8 +12,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.zvonimirplivelic.pomodorotimer.receiver.TimerReceiver
 import com.zvonimirplivelic.pomodorotimer.util.PrefUtil
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar
+import java.util.*
 
 private const val TAG = "MainActivity"
 
@@ -20,6 +26,30 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fabPause: FloatingActionButton
     private lateinit var progressBar: MaterialProgressBar
     private lateinit var tvTime: TextView
+
+    companion object {
+        fun setAlarm(context: Context, nowSeconds: Long, secondsRemaining: Long): Long {
+            val countdownEndTime = (nowSeconds + secondsRemaining) * 1000
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = Intent(context, TimerReceiver::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, countdownEndTime, pendingIntent)
+
+            PrefUtil.setAlarmSetTime(nowSeconds, context)
+            return countdownEndTime
+        }
+
+        fun removeAlarm(context: Context) {
+            val intent = Intent(context, TimerReceiver::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.cancel(pendingIntent)
+            PrefUtil.setAlarmSetTime(0, context)
+        }
+
+        val currentSeconds: Long
+            get() = Calendar.getInstance().timeInMillis / 1000
+    }
 
     enum class TimerState {
         STOPPED, PAUSED, RUNNING
@@ -66,6 +96,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         initializeTimer()
+        removeAlarm(this)
     }
 
     override fun onPause() {
@@ -73,19 +104,14 @@ class MainActivity : AppCompatActivity() {
 
         if (timerState == TimerState.RUNNING) {
             timer.cancel()
+//            val countdownEndTime = setAlarm(this, currentSeconds, secondsRemaining)
         } else if (timerState == TimerState.PAUSED) {
 
-            PrefUtil.setPreviousTimerLength(timerLengthSeconds, this)
-            PrefUtil.setSecondsRemaining(secondsRemaining, this)
-            PrefUtil.setTimerState(timerState, this)
-
         }
+        PrefUtil.setPreviousTimerLength(timerLengthSeconds, this)
+        PrefUtil.setSecondsRemaining(secondsRemaining, this)
+        PrefUtil.setTimerState(timerState, this)
     }
-
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        PrefUtil.getTimerLength(this)
-//    }
 
     private fun initializeTimer() {
         timerState = PrefUtil.getTimerState(this)
@@ -94,6 +120,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             setPreviousTimerLength()
         }
+
         secondsRemaining =
             if (timerState == TimerState.RUNNING || timerState == TimerState.PAUSED) {
                 PrefUtil.getSecondsRemaining(this)
@@ -101,14 +128,24 @@ class MainActivity : AppCompatActivity() {
                 timerLengthSeconds
             }
 
-        if (timerState == TimerState.RUNNING) {
-            startTimer()
-            updateButtons()
+        val alarmSetTime = PrefUtil.getAlarmSetTime(this)
+
+        if (alarmSetTime > 0) {
+            secondsRemaining -= currentSeconds - alarmSetTime
         }
+
+        if (secondsRemaining <= 0) {
+            onTimerFinished()
+        } else if (timerState == TimerState.RUNNING) {
+            startTimer()
+        }
+
+        updateButtons()
+        updateCountdownUI()
     }
 
     private fun onTimerFinished() {
-        timerState = MainActivity.TimerState.STOPPED
+        timerState = TimerState.STOPPED
         setNewTimerLength()
 
         progressBar.progress = 0
@@ -121,7 +158,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startTimer() {
-        timerState = MainActivity.TimerState.RUNNING
+        timerState = TimerState.RUNNING
         timer = object : CountDownTimer(secondsRemaining * 1000, 1000) {
             override fun onFinish() = onTimerFinished()
 
