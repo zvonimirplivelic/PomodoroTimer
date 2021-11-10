@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -157,7 +158,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onTimerFinished() {
+        playSound()
         timerState = TimerState.STOPPED
+        playSound()
         setNewTimerLength()
 
         progressBar.progress = 0
@@ -167,6 +170,11 @@ class MainActivity : AppCompatActivity() {
 
         updateButtons()
         updateCountdownUI()
+    }
+
+    private fun playSound() {
+        var player = MediaPlayer.create(this, R.raw.tomato_splash)
+        player.start()
     }
 
     private fun startTimer() {
