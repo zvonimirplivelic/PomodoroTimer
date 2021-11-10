@@ -12,7 +12,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import com.zvonimirplivelic.pomodorotimer.MainActivity
+import com.zvonimirplivelic.pomodorotimer.activity.MainActivity
 import com.zvonimirplivelic.pomodorotimer.R
 import com.zvonimirplivelic.pomodorotimer.receiver.TimerNotificationsReceiver
 import java.text.SimpleDateFormat
