@@ -27,7 +27,7 @@ class NotificationUtil {
         private const val TIMER_ID = 0
 
         fun showTimerExpired(context: Context) {
-            playSound(context)
+            playSound(context, PrefUtil.getAlarmSoundEnabled(context))
 
             val startIntent = Intent(context, TimerNotificationsReceiver::class.java)
             startIntent.action = Constants.ACTION_START

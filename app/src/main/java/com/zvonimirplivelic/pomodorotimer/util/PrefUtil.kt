@@ -55,6 +55,7 @@ class PrefUtil {
         }
 
         private const val ALARM_SET_TIME_ID = "ALARM_SET_TIME"
+
         fun getAlarmSetTime(context: Context): Long {
             val preferences = getDefaultSharedPreferences(context)
             return preferences.getLong(ALARM_SET_TIME_ID, 0)
@@ -63,6 +64,19 @@ class PrefUtil {
         fun setAlarmSetTime(time: Long, context: Context) {
             val editor = getDefaultSharedPreferences(context).edit()
             editor.putLong(ALARM_SET_TIME_ID, time)
+            editor.apply()
+        }
+
+        private const val ALARM_SOUND_ENABLED_ID = "ALARM_SOUND_ENABLED"
+
+        fun getAlarmSoundEnabled(context: Context): Boolean {
+            val preferences = getDefaultSharedPreferences(context)
+            return preferences.getBoolean(ALARM_SOUND_ENABLED_ID, true)
+        }
+
+        fun setAlarmSoundEnabled(soundEnabled: Boolean, context: Context) {
+            val editor = getDefaultSharedPreferences(context).edit()
+            editor.putBoolean(ALARM_SOUND_ENABLED_ID, soundEnabled)
             editor.apply()
         }
     }

@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onTimerFinished() {
-        playSound(this)
+        playSound(this, PrefUtil.getAlarmSoundEnabled(this))
         timerState = TimerState.STOPPED
         setNewTimerLength()
 
