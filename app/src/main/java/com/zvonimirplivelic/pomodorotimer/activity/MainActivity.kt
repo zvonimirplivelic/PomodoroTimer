@@ -12,6 +12,8 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -28,11 +30,14 @@ private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var timer: CountDownTimer
+
     private lateinit var fabStart: FloatingActionButton
     private lateinit var fabStop: FloatingActionButton
     private lateinit var fabPause: FloatingActionButton
     private lateinit var progressBar: MaterialProgressBar
     private lateinit var tvTime: TextView
+    private lateinit var ivTomato: ImageView
 
     companion object {
         fun setAlarm(context: Context, nowSeconds: Long, secondsRemaining: Long): Long {
@@ -62,7 +67,6 @@ class MainActivity : AppCompatActivity() {
         STOPPED, PAUSED, RUNNING
     }
 
-    private lateinit var timer: CountDownTimer
     private var timerLengthSeconds: Long = 0L
     private var timerState = TimerState.STOPPED
 
@@ -83,6 +87,7 @@ class MainActivity : AppCompatActivity() {
         fabPause = findViewById(R.id.fab_pause)
         progressBar = findViewById(R.id.mpb_progress_bar)
         tvTime = findViewById(R.id.tv_timer_countdown)
+        ivTomato = findViewById(R.id.iv_tomato)
 
         fabStart.setOnClickListener {
             startTimer()
@@ -160,6 +165,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onTimerFinished() {
         playSound(this, PrefUtil.getAlarmSoundEnabled(this))
+        // animate IV
         timerState = TimerState.STOPPED
         setNewTimerLength()
 
@@ -214,6 +220,7 @@ class MainActivity : AppCompatActivity() {
                 fabStart.isEnabled = false
                 fabPause.isEnabled = true
                 fabStop.isEnabled = true
+                ivTomato.visibility = View.GONE
             }
             TimerState.PAUSED -> {
                 fabStart.isEnabled = true
@@ -223,7 +230,8 @@ class MainActivity : AppCompatActivity() {
             TimerState.STOPPED -> {
                 fabStart.isEnabled = true
                 fabPause.isEnabled = false
-                fabStop.isEnabled = true
+                fabStop.isEnabled = false
+                ivTomato.visibility = View.VISIBLE
             }
         }
     }
