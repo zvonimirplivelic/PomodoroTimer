@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
+        android:defaultValue="25"
+        android:key="POMODORO_TIMER_LENGTH"
+        android:summary="For how long do you intend to study?"
+        android:title="Pomodoro Timer Length"
+        app:msbp_dialogEnabled="true"
+        app:msbp_interval="1"
+        app:msbp_maxValue="90"
+        app:msbp_measurementUnit="minutes"
+        app:msbp_minValue="1" />
 </PreferenceScreen>

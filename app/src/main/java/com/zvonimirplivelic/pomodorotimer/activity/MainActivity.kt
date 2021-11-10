@@ -1,9 +1,10 @@
-package com.zvonimirplivelic.pomodorotimer
+package com.zvonimirplivelic.pomodorotimer.activity
 
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -12,7 +13,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.zvonimirplivelic.pomodorotimer.R
 import com.zvonimirplivelic.pomodorotimer.receiver.TimerDoneReceiver
+import com.zvonimirplivelic.pomodorotimer.util.Constants
 import com.zvonimirplivelic.pomodorotimer.util.NotificationUtil
 import com.zvonimirplivelic.pomodorotimer.util.PrefUtil
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar
@@ -67,8 +70,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(findViewById(R.id.toolbar))
-        supportActionBar?.setIcon(R.drawable.ic_tomato)
-        supportActionBar?.title = "Pomodoro Timer"
+        supportActionBar?.apply {
+            setIcon(R.drawable.ic_tomato)
+            title = "Pomodoro Timer"
+        }
 
         fabStart = findViewById(R.id.fab_play)
         fabStop = findViewById(R.id.fab_stop)
@@ -226,6 +231,13 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
+                true
+            }
+            R.id.action_info -> {
+                val infoURL = Constants.INFO_URL
+                val infoIntent = Intent(Intent.ACTION_VIEW)
+                infoIntent.data = Uri.parse(infoURL)
+                startActivity(infoIntent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
