@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.zvonimirplivelic.pomodorotimer.R
 import com.zvonimirplivelic.pomodorotimer.receiver.TimerDoneReceiver
@@ -101,6 +102,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+//
+//        val secondsOnProgressBar = PrefUtil.getSecondsRemaining(this).toInt()
+//        progressBar.progress = secondsOnProgressBar
         initializeTimer()
         removeAlarm(this)
         NotificationUtil.hideTimerNotification(this)
