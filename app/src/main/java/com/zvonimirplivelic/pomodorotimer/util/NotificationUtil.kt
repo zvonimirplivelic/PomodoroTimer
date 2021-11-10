@@ -8,6 +8,7 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
@@ -15,6 +16,7 @@ import androidx.core.app.NotificationCompat
 import com.zvonimirplivelic.pomodorotimer.activity.MainActivity
 import com.zvonimirplivelic.pomodorotimer.R
 import com.zvonimirplivelic.pomodorotimer.receiver.TimerNotificationsReceiver
+import com.zvonimirplivelic.pomodorotimer.util.MediaPlayerUtil.playSound
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -25,6 +27,8 @@ class NotificationUtil {
         private const val TIMER_ID = 0
 
         fun showTimerExpired(context: Context) {
+            playSound(context)
+
             val startIntent = Intent(context, TimerNotificationsReceiver::class.java)
             startIntent.action = Constants.ACTION_START
 

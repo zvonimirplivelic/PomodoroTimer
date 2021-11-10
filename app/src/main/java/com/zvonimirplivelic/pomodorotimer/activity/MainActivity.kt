@@ -18,6 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.zvonimirplivelic.pomodorotimer.R
 import com.zvonimirplivelic.pomodorotimer.receiver.TimerDoneReceiver
 import com.zvonimirplivelic.pomodorotimer.util.Constants
+import com.zvonimirplivelic.pomodorotimer.util.MediaPlayerUtil.playSound
 import com.zvonimirplivelic.pomodorotimer.util.NotificationUtil
 import com.zvonimirplivelic.pomodorotimer.util.PrefUtil
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar
@@ -158,9 +159,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onTimerFinished() {
-        playSound()
+        playSound(this)
         timerState = TimerState.STOPPED
-        playSound()
         setNewTimerLength()
 
         progressBar.progress = 0
@@ -170,11 +170,6 @@ class MainActivity : AppCompatActivity() {
 
         updateButtons()
         updateCountdownUI()
-    }
-
-    private fun playSound() {
-        var player = MediaPlayer.create(this, R.raw.tomato_splash)
-        player.start()
     }
 
     private fun startTimer() {
