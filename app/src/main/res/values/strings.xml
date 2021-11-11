@@ -1,14 +1,15 @@
 <resources>
     <string name="app_name">PomodoroTimer</string>
 
-<!--Menu strings-->
+    <!--Menu strings-->
     <string name="action_settings">Settings</string>
     <string name="action_info">Information</string>
 
-<!--Settings strings-->
+    <!--Settings strings-->
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="fab_stop_description">Stop Timer</string>
     <string name="fab_pause_description">Pause Timer</string>
     <string name="fab_start_description">Start Timer</string>
+    <string name="btn_open_wiki_info_text">Learn more</string>
 
 </resources>

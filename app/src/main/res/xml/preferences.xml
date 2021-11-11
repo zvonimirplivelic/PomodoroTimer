@@ -4,20 +4,22 @@
 
     <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
         android:defaultValue="25"
+        android:icon="@drawable/ic_time"
         android:key="POMODORO_TIMER_LENGTH"
+        android:layout_margin="16dp"
+        android:padding="8dp"
         android:summary="For how long do you intend to study?"
         android:title="Pomodoro Timer Length"
         app:msbp_dialogEnabled="true"
         app:msbp_interval="1"
-        android:icon="@drawable/ic_time"
         app:msbp_maxValue="90"
         app:msbp_measurementUnit="minutes"
         app:msbp_minValue="1" />
 
     <SwitchPreferenceCompat
-        android:title="Enable audio"
-        android:icon="@drawable/ic_sound"
-        android:summary="Do you want enable sounds in the app?"
         android:defaultValue="false"
-        android:key="ALARM_SOUND_ENABLED"/>
+        android:icon="@drawable/ic_sound"
+        android:key="ALARM_SOUND_ENABLED"
+        android:summary="Do you want enable sounds in the app?"
+        android:title="Enable audio" />
 </PreferenceScreen>

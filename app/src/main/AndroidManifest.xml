@@ -30,11 +30,16 @@
             android:label="@string/title_activity_settings"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
+        <activity
+            android:name=".activity.InfoActivity"
+            android:exported="true"
+            android:label="InfoActivity"
+            android:theme="@style/Theme.PomodoroTimer.NoActionBar" />
+
         <receiver
             android:name=".receiver.TimerDoneReceiver"
             android:enabled="true"
             android:exported="true" />
-
         <receiver
             android:name=".receiver.TimerNotificationsReceiver"
             android:enabled="true"
