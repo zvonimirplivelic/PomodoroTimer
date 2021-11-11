@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -163,7 +164,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun onTimerFinished() {
         playSound(this, PrefUtil.getAlarmSoundEnabled(this))
-        // animate IV
+
+        finishTimerAnimation()
+
         timerState = TimerState.STOPPED
         setNewTimerLength()
 
@@ -177,6 +180,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startTimer() {
+        startTimerAnimation()
+
         timerState = TimerState.RUNNING
         timer = object : CountDownTimer(secondsRemaining * 1000, 1000) {
             override fun onFinish() = onTimerFinished()
@@ -235,6 +240,20 @@ class MainActivity : AppCompatActivity() {
                 ivTomato.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun startTimerAnimation() {
+        val fadeOutAnim = AnimationUtils.loadAnimation(this, R.anim.fade_out)
+        val fadeInAnim = AnimationUtils.loadAnimation(this, R.anim.fade_in)
+        tvCountdownTime.startAnimation(fadeInAnim)
+        ivTomato.startAnimation(fadeOutAnim)
+    }
+
+    private fun finishTimerAnimation() {
+        val fadeOutAnim = AnimationUtils.loadAnimation(this, R.anim.fade_out)
+        val fadeInAnim = AnimationUtils.loadAnimation(this, R.anim.fade_in)
+        tvCountdownTime.startAnimation(fadeOutAnim)
+        ivTomato.startAnimation(fadeInAnim)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
