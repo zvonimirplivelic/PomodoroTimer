@@ -4,7 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -15,7 +14,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.zvonimirplivelic.pomodorotimer.R
 import com.zvonimirplivelic.pomodorotimer.receiver.TimerDoneReceiver
@@ -36,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fabStop: FloatingActionButton
     private lateinit var fabPause: FloatingActionButton
     private lateinit var progressBar: MaterialProgressBar
-    private lateinit var tvTime: TextView
+    private lateinit var tvCountdownTime: TextView
     private lateinit var ivTomato: ImageView
 
     companion object {
@@ -86,7 +84,7 @@ class MainActivity : AppCompatActivity() {
         fabStop = findViewById(R.id.fab_stop)
         fabPause = findViewById(R.id.fab_pause)
         progressBar = findViewById(R.id.mpb_progress_bar)
-        tvTime = findViewById(R.id.tv_timer_countdown)
+        tvCountdownTime = findViewById(R.id.tv_timer_countdown)
         ivTomato = findViewById(R.id.iv_tomato)
 
         fabStart.setOnClickListener {
@@ -206,7 +204,7 @@ class MainActivity : AppCompatActivity() {
         val secondsInMinuteUntilFinished = secondsRemaining - minutesUntilFinished * 60
 
         val secondsString = secondsInMinuteUntilFinished.toString()
-        tvTime.text = "$minutesUntilFinished:${
+        tvCountdownTime.text = "$minutesUntilFinished:${
             if (secondsString.length == 2) secondsString
             else "0" + secondsString
         }"
@@ -221,16 +219,19 @@ class MainActivity : AppCompatActivity() {
                 fabPause.isEnabled = true
                 fabStop.isEnabled = true
                 ivTomato.visibility = View.GONE
+                tvCountdownTime.visibility = View.VISIBLE
             }
             TimerState.PAUSED -> {
                 fabStart.isEnabled = true
                 fabPause.isEnabled = false
                 fabStop.isEnabled = true
+                tvCountdownTime.visibility = View.VISIBLE
             }
             TimerState.STOPPED -> {
                 fabStart.isEnabled = true
                 fabPause.isEnabled = false
                 fabStop.isEnabled = false
+                tvCountdownTime.visibility = View.GONE
                 ivTomato.visibility = View.VISIBLE
             }
         }

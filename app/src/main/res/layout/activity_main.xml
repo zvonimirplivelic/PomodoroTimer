@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/red_light"
     android:layout_height="match_parent"
+    android:background="@color/red_light"
     tools:context=".activity.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/Theme.PomodoroTimer.AppBarOverlay">
+        android:theme="@style/Theme.PomodoroTimer.AppBarOverlay"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -21,41 +24,82 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+
+    <TextView
+        android:id="@+id/tv_timer_countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/red_dark"
+        android:textSize="64sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_tomato"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="48dp"
+        android:src="@drawable/ic_tomato"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:id="@+id/mpb_progress_bar"
+        style="@style/Widget.MaterialProgressBar.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:minWidth="310dp"
+        android:minHeight="310dp"
+        android:progressTint="@color/red_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        app:backgroundTint="@color/red_dark"
-        app:borderWidth="0dp"
-        android:elevation="3dp"
-        app:fabSize="normal"
         android:layout_marginEnd="@dimen/fab_bigger_margin"
         android:layout_marginBottom="@dimen/fab_bigger_margin"
-        app:srcCompat="@drawable/ic_stop"
-        android:contentDescription="@string/fab_stop_description" />
+        android:contentDescription="@string/fab_stop_description"
+        android:elevation="3dp"
+        app:backgroundTint="@color/red_dark"
+        app:borderWidth="0dp"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/ic_stop" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_pause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:backgroundTint="@color/red_dark"
-        android:layout_gravity="bottom|center"
         android:layout_marginBottom="@dimen/fab_bigger_margin"
-        app:srcCompat="@drawable/ic_pause"
-        android:contentDescription="@string/fab_pause_description" />
+        android:contentDescription="@string/fab_pause_description"
+        app:backgroundTint="@color/red_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/ic_pause" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_play"
         android:layout_width="wrap_content"
-        app:backgroundTint="@color/red_dark"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:layout_marginStart="@dimen/fab_bigger_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginBottom="@dimen/fab_bigger_margin"
-        app:srcCompat="@drawable/ic_play"
-        android:contentDescription="@string/fab_start_description" />
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        android:contentDescription="@string/fab_start_description"
+        app:backgroundTint="@color/red_dark"
+        app:srcCompat="@drawable/ic_play" />
+</androidx.constraintlayout.widget.ConstraintLayout>

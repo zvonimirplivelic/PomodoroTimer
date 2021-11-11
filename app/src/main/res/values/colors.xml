@@ -2,8 +2,8 @@
 <resources>
     <color name="red_dark">#FFFF6347</color>
     <color name="red_medium">#FFFF9579</color>
-    <color name="red_light">#FFFFC7AB</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="gray">#FFCCCCCC</color>
+    <color name="red_light">#FFF1AAA0</color>
+    <color name="black">#FF010101</color>
+    <color name="white">#FFEDEDED</color>
+    <color name="gray">#FFAA9988</color>
 </resources>
